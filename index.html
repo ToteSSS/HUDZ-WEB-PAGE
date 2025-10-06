@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUDZ - Urban Streetwear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .slide-text {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #000;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">HUDZ</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <div class="hero">
+                <div class="slider-container">
+                    <div class="slider">
+                        <div class="slide">
+                            <img src="Images/Cargos.png" alt="Featured HUDZ Hoodie Collection">
+                        </div>
+                        <div class="slide">
+                            <img src="Images/Tshirt.png" alt="Featured HUDZ Cap Collection">
+                        </div>                        
+                        <div class="slide">
+                            <img src="Images/Sleeveles Hoodie.png" alt="Featured HUDZ T-Shirt Collection">
+                        </div>
+                        <div class="slide">
+                            <img src="Images/Cap.png" alt="Featured HUDZ T-Shirt Collection">
+                        </div>
+                        <div class="slide">
+                            <img src="Images/Hoodie.png" alt="Featured HUDZ Cargos Collection">
+                        </div>
+                          <div class="slide">
+                            <img src="Images/Sneakers.png" alt="Featured HUDZ Cargos Collection">
+                        </div>
+                        <div class="slide">
+                            <img src="Images/Chain.png" alt="Featured HUDZ Cargos Collection">
+                        </div>
+                    </div>
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="currentSlide(1)"></span>
+                        <span class="dot" onclick="currentSlide(2)"></span>
+                        <span class="dot" onclick="currentSlide(3)"></span>
+                        <span class="dot" onclick="currentSlide(4)"></span>
+                        <span class="dot" onclick="currentSlide(5)"></span>
+                        <span class="dot" onclick="currentSlide(6)"></span>
+                        <span class="dot" onclick="currentSlide(7)"></span>
+                    </div>
+                </div>
+                <h1>Welcome to HUDZ</h1>
+                <p>Discover urban streetwear that blends comfort, style, and edge. HUDZ is your go-to for modern apparel inspired by city life.</p>
+            </div>
+        </section>
+
+        <div class="map-section">
+            <div class="container">
+                <h2>Visit Us</h2>
+                <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">Find our store in Lima 757, C1073 Cdad. Autónoma de Buenos Aires</p>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3304.0!2d-118.2437!3d34.0522!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bc7e1b3f4f3b%3A0x4a8e2b0f2e4c5d6e!2s123%20Main%20St%2C%20Los%20Angeles%2C%20CA%2090001!5e0!3m2!1sen!2sus!4v1690000000000!5m2!1sen!2sus" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 HUDZ. All rights reserved. | Urban Streetwear Redefined.</p>
+        </div>
+    </footer>
+
+    <script>
+        console.log('=== SCRIPT LOADED SUCCESSFULLY ===');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM ready - initializing slider');
+
+            let currentSlideIndex = 0;
+            const slidesElement = document.querySelector('.slider');
+            const dots = document.querySelectorAll('.dot');
+            const totalSlides = 7;
+
+            console.log('Elements found:', { slider: !!slidesElement, dots: dots.length });
+
+            if (!slidesElement || dots.length !== 7) {
+                console.error('CRITICAL: Slider elements missing!');
+                alert('ERROR: Slider not found. Check if .slider and .dot classes are in HTML.');
+                return;
+            }
+
+            function showSlide(index) {
+                console.log('showSlide executing for index ' + index);
+                slidesElement.style.transform = 'translateX(-' + (index * 100) + '%)';
+                dots.forEach(function(dot, i) {
+                    if (i === index) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                });
+                console.log('Slide ' + (index + 1) + ' displayed');
+            }
+
+            function nextSlide() {
+                console.log('nextSlide triggered');
+                currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+                showSlide(currentSlideIndex);
+            }
+
+            window.nextSlide = nextSlide;
+            window.showSlide = showSlide;
+            window.currentSlide = function(n) {
+                currentSlideIndex = n - 1;
+                showSlide(currentSlideIndex);
+            };
+
+            showSlide(0);
+            console.log('Initial slide (1) set');
+            const interval = setInterval(nextSlide, 2000);
+            console.log('Interval started: ID ' + interval + ' (every 2s)');
+            console.log('=== SLIDER FULLY INITIALIZED ===');
+        });
+    </script>
+</body>
+</html>
