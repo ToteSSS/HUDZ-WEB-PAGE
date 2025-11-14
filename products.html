@@ -6,6 +6,8 @@
     <title>Products - HUDZ Urban Streetwear</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Agregar jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <header>
@@ -17,66 +19,214 @@
                 <li><a href="products.html">Products</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
+            <!-- Ícono del carrito en el header -->
+            <div class="cart-icon" id="cart-icon">
+                🛒 <span class="cart-count" id="cart-count">0</span>
+            </div>
         </nav>
     </header>
 
     <main>
+        <!-- Sección de promociones -->
+        <section class="promotions-section">
+            <div class="container">
+                <h2>Promociones Activas</h2>
+                <div id="promotions-container">
+                    <div class="promotion-card" data-promo="2x1-shirt">
+                        <h3>2x1 en Camisetas HUDZ</h3>
+                        <p>Llévate 2 camisetas y paga solo 1. ¡Aplicable en HUDZ Shirt!</p>
+                    </div>
+                    <div class="promotion-card" data-promo="30off-second">
+                        <h3>30% Off en la Segunda Prenda</h3>
+                        <p>En hoodies, cargopants y sneakers seleccionados. ¡Agrega 2 o más para activar!</p>
+                    </div>
+                    <div class="promotion-card" data-promo="10off-chain">
+                        <h3>10% Off en Chains</h3>
+                        <p>Si tu carrito supera $1000, descuento automático en HUDZ Diamond Chain.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section>
             <div class="container">
                 <h2>Our Products</h2>
                 <div class="products-grid">
-                    <div class="product-card">
+                    <div class="product-card" data-product="hoodie" data-price="79.99">
                         <img src="Images/Hoodie.png" alt="Urban Hoodie">
                         <h3>HUDZ Hoodie</h3>
                         <p>Comfortable oversized hoodie in premium cotton. Perfect for layering in the city.</p>
                         <div class="price">$79.99</div>
+                        <!-- Botón Add to Cart -->
+                        <button class="add-to-cart-btn">Add to Cart</button>
                     </div>
-                    <div class="product-card">
+                    <div class="product-card" data-product="cargopants" data-price="59.99">
                         <img src="Images/Cargos.png" alt="Street Jeans">
                         <h3>HUDZ Cargo Pants</h3>
                         <p>Slim-fit Cargos with distressed details.</p>
                         <div class="price">$59.99</div>
+                        <button class="add-to-cart-btn">Add to Cart</button>
                     </div>
-                    <div class="product-card">
+                    <div class="product-card" data-product="shirt" data-price="29.99">
                         <img src="Images/Tshirt.png" alt="Street Jeans">
                         <h3>HUDZ Shirt</h3>
                         <p>Slim-fit Shirt for that authentic urban look.</p>
                         <div class="price">$29.99</div>
+                        <button class="add-to-cart-btn">Add to Cart</button>
                     </div>
-                    <div class="product-card">
+                    <div class="product-card" data-product="cap" data-price="19.99">
                         <img src="Images/Cap.png" alt="Sneaker Collection">
                         <h3>HUDZ Cap</h3>
                         <p>A Cap designed to catch the huzz</p>
                         <div class="price">$19.99</div>
+                        <button class="add-to-cart-btn">Add to Cart</button>
                     </div>
-                    <div class="product-card">
+                    <div class="product-card" data-product="sleevehoodie" data-price="89.99">
                         <img src="Images/Sleeveles Hoodie.png" alt="Sneaker Collection">
                         <h3>HUDZ Sleevles Hoodie</h3>
                         <p>Sleevles Hoodie for a warm but not Hot day</p>
                         <div class="price">$89.99</div>
+                        <button class="add-to-cart-btn">Add to Cart</button>
                     </div>
-                    <div class="product-card">
+                    <div class="product-card" data-product="sneakers" data-price="99.99">
                         <img src="Images/Sneakers.png" alt="Sneaker Collection">
                         <h3>HUDZ Sneakers</h3>
                         <p>High-top sneakers blending retro vibes with modern comfort.</p>
                         <div class="price">$99.99</div>
+                        <button class="add-to-cart-btn">Add to Cart</button>
                     </div>
-                    <div class="product-card">
+                    <div class="product-card" data-product="chain" data-price="9999.99">
                         <img src="Images/Chain.png" alt="Sneaker Collection">
                         <h3>HUDZ Diamond Chain</h3>
                         <p>HUDZ Chain in collaboration with Givenchy, Don Rouch and Swarovsky.</p>
                         <p>Special Diamonds from Cordoba</p>
                         <div class="price">$9999.99</div>
+                        <button class="add-to-cart-btn">Add to Cart</button>
                     </div>
                 </div> 
             </div>
         </section>
     </main>
 
+    <div class="cart-modal" id="cart-modal">
+        <h3>Tu Carrito</h3>
+        <div id="cart-items"></div>
+        <div class="cart-total">Total: $<span id="cart-total">0.00</span></div>
+        <button class="btn-checkout">Proceder al Checkout</button>
+        <button onclick="$('#cart-modal').removeClass('show');">Cerrar</button>
+    </div>
+
     <footer>
         <div class="container">
             <p>&copy; 2025 HUDZ. All rights reserved. | Urban Streetwear Redefined.</p>
         </div>
     </footer>
+
+    <script>
+        $(document).ready(function() {
+            let cart = JSON.parse(localStorage.getItem('hudz-cart')) || [];
+            updateCartUI();
+
+            // Agregar al carrito
+            $('.add-to-cart-btn').click(function() {
+                const card = $(this).closest('.product-card');
+                const product = {
+                    id: card.data('product'),
+                    name: card.find('h3').text(),
+                    price: parseFloat(card.data('price')),
+                    img: card.find('img').attr('src')
+                };
+                cart.push(product);
+                localStorage.setItem('hudz-cart', JSON.stringify(cart));
+                updateCartUI();
+                applyPromotions();
+            });
+
+            // Mostrar/ocultar carrito
+            $('#cart-icon').click(function() {
+                $('#cart-modal').toggleClass('show');
+            });
+
+            // Remover item del carrito
+            $(document).on('click', '.btn-remove', function() {
+                const index = $(this).data('index');
+                cart.splice(index, 1);
+                localStorage.setItem('hudz-cart', JSON.stringify(cart));
+                updateCartUI();
+                applyPromotions();
+            });
+
+            // Checkout simulado
+            $('.btn-checkout').click(function() {
+                alert('¡Gracias por tu compra! (Esto es simulado)');
+                cart = [];
+                localStorage.removeItem('hudz-cart');
+                updateCartUI();
+                applyPromotions();
+            });
+
+            function updateCartUI() {
+                $('#cart-count').text(cart.length);
+                $('#cart-items').empty();
+                let total = 0;
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    $('#cart-items').append(`
+                        <div class="cart-item">
+                            <img src="${item.img}" alt="${item.name}">
+                            <div class="cart-item-details">
+                                <p>${item.name}</p>
+                                <p>$${item.price.toFixed(2)}</p>
+                            </div>
+                            <button class="btn-remove" data-index="${index}">X</button>
+                        </div>
+                    `);
+                });
+                $('#cart-total').text(total.toFixed(2));
+            }
+
+            function applyPromotions() {
+                $('.promotion-card').removeClass('active');
+                let shirtCount = cart.filter(item => item.id === 'shirt').length;
+                let eligibleSecond = cart.filter(item => ['hoodie', 'cargopants', 'sneakers'].includes(item.id)).length;
+                let totalValue = cart.reduce((sum, item) => sum + item.price, 0);
+
+                // 2x1 en shirts
+                if (shirtCount >= 2) {
+                    $('.promotion-card[data-promo="2x1-shirt"]').addClass('active');
+                    // Aplicar descuento: segunda gratis
+                    let shirts = cart.filter(item => item.id === 'shirt');
+                    if (shirts.length > 1) {
+                        shirts[1].price = 0; // Simular gratis
+                        updateCartUI();
+                    }
+                }
+
+                // 30% off en segunda prenda elegible
+                if (eligibleSecond >= 2) {
+                    $('.promotion-card[data-promo="30off-second"]').addClass('active');
+                    // Aplicar 30% off en la segunda
+                    let eligibleItems = cart.filter(item => ['hoodie', 'cargopants', 'sneakers'].includes(item.id));
+                    if (eligibleItems.length > 1) {
+                        eligibleItems[1].price *= 0.7;
+                        updateCartUI();
+                    }
+                }
+
+                // 10% off en chains si total > 1000
+                if (totalValue > 10000) {
+                    $('.promotion-card[data-promo="10off-chain"]').addClass('active');
+                    cart.forEach(item => {
+                        if (item.id === 'chain') {
+                            item.price *= 0.9;
+                        }
+                    });
+                    updateCartUI();
+                }
+            }
+
+            applyPromotions();
+        });
+    </script>
 </body>
 </html>
